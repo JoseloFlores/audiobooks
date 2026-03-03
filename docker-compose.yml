@@ -1,0 +1,42 @@
+version: "3.7"
+
+services:
+  transmission-libros:
+    image: lscr.io/linuxserver/transmission:latest
+    container_name: transmission_libros
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=${TZ:-America/Argentina/Buenos_Aires} # Ajusta a tu zona horaria
+    volumes:
+      - ${BOOK_STACK_PATH}/transmission_libros/config:/config
+      - ${BOOK_STACK_PATH}/audiolibros:/downloads # Todo lo que baje aquí, va a la carpeta de libros
+    ports:
+      - 9092:9091 # Puerto 9091 para la interfaz web 
+      - 51414:51413 # Puertos de datos distintos para no chocar
+      - 51414:51413/udp
+    restart: unless-stopped
+
+  # SERVIDOR PARA LA TV
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin_audiobooks
+    user: 1000:1000
+    network_mode: "host" 
+    volumes:
+      - ${BOOK_STACK_PATH}/jellyfin/config:/config
+      - ${BOOK_STACK_PATH}/jellyfin/cache:/cache
+      - ${BOOK_STACK_PATH}/audiolibros:/data/audiobooks:ro
+    restart: unless-stopped
+
+  # GESTOR DE PORTADAS Y CAPÍTULOS (Opcional, pero recomendado para el orden)
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    ports:
+      - 13378:80
+    volumes:
+      - ${BOOK_STACK_PATH}/audiolibros:/audiobooks
+      - ${BOOK_STACK_PATH}/audiobookshelf/config:/config
+      - ${BOOK_STACK_PATH}/audiobookshelf/metadata:/metadata
+    restart: unless-stopped
