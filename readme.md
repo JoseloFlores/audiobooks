@@ -23,12 +23,13 @@ Este proyecto está diseñado para ser simple y usarse en una red local y privad
 🛠️ Estructura de Carpetas
 El proyecto utiliza una ruta base que puedes configurar para separar la configuración de los archivos multimedia. La estructura es la siguiente:
 
+```text
 /ruta/que/elijas/
 ├── audiolibros/              # Los archivos MP3/M4B finales
 ├── jellyfin/                 # Configuración de Jellyfin
 ├── audiobookshelf/           # Configuración de Audiobookshelf
 └── transmission_libros/      # Configuración del descargador
-
+``` 
 
 📦 Instalación
 1. Configurar el entorno:
